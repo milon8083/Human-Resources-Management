@@ -1,0 +1,67 @@
+/**
+ * 
+ * @authors 宋波
+ * @date    2016年11月25日15:14:04
+ * @version $Id$
+ */
+
+$(document).ready(function($) {
+    var homeIndex = 0;
+    var homeImgLeng = $('.cy_lb_box ul li').length;
+    Autoscroll();
+    $('.cy_lb_box ul').width($('.home_lb_box ul li')*homeImgLeng);
+    for (var i = 0; i < homeImgLeng; i++) {
+      $('.cy_cho_box').append('<em></em>');
+    };
+    move();
+
+    $('.cy_lb_box ul li').stop(true,true).eq(homeIndex).fadeIn(500, function() {
+      $('.cy_lb_box ul li').eq(homeIndex).siblings('li').fadeOut(500);
+    });
+    $('.cy_cho_box em').eq(homeIndex).addClass('em_on').siblings('em').removeClass('em_on');
+
+
+    $(document).on('click', '.cy_cho_box em', function(event) {
+      event.preventDefault();
+      homeIndex = $(this).index();
+      move();
+    });
+
+    
+
+    $('.cy_cho_box em').hover(function() {
+        clearInterval(lb); 
+      }, function() {
+        lb = window.setInterval(countadd, 5000);
+      });
+
+
+
+
+
+
+
+/*自动轮播*/
+function Autoscroll(){
+  lb = window.setInterval(countadd, 5000);
+}
+
+function countadd(){
+  homeIndex = homeIndex + 1;
+  if (homeIndex > homeImgLeng-1) {
+    homeIndex = 0;
+  };
+
+  move();
+
+}
+function move(){ 
+    $('.cy_lb_box ul li').stop(true,true).eq(homeIndex).fadeIn(300);
+    $('.cy_lb_box ul li').eq(homeIndex).siblings('li').fadeOut();
+    $('.cy_cho_box em').eq(homeIndex).addClass('on').siblings('em').removeClass('on');
+
+}
+
+});
+
+

@@ -1,0 +1,72 @@
+/**
+ * 
+ * @authors 宋波
+ * @date    2016年11月21日10:03:59
+ * @version $Id$
+ */
+
+$(document).ready(function($) {
+
+        $('.sub_nav_bd').each(function(index, el) {
+
+              $(this).css('left', -(200 - $(this).parent('li').width())*0.5);
+
+        });
+
+        $('.banner_pic').each(function(index, el) {
+
+              $(this).css('left', -(1920 - $(window).width())*0.5);
+
+        });
+
+        $('.zazhi_bd').each(function(index, el) {
+
+              $(this).width($(this).find('a').length*236)
+
+        });
+
+
+        $('.zt_list').each(function(e) {
+
+              if (e % 2 == 1) {
+
+              	$(this).css('marginRight', '0');
+
+              };
+
+              var shadowSrc = $(this).find('.zt_pic').attr('src');
+
+              $(this).find('.shadow_pic').attr('src', shadowSrc);
+
+        });
+
+        $('.video_list').each(function(e) {
+
+              if (e % 3 == 2) {
+
+              	$(this).css('marginRight', '0');
+
+              };
+
+        });
+
+        $('.fc_list').each(function(e) {
+
+              if (e % 3 == 2) {
+
+                $(this).css('marginRight', '0');
+
+              };
+
+        });
+
+        // $('.to_top').css('left', ($(window).width() - 1200)*0.5 + 1250);
+
+        $('.ny_banner img').css('marginLeft', -(1920 - $(window).width())*0.5);
+
+
+        
+
+});
+
+

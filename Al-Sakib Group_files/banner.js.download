@@ -1,0 +1,90 @@
+/**
+ * 
+ * @authors 宋波
+ * @date    2016年7月26日14:59:12;
+ * @version $Id$
+ */
+
+$(document).ready(function($) {
+    Bannerscroll();
+    var homeIdx=1;
+    var homeLeng=$('.home_banner ul li').length;
+    var picWid = $('.home_banner ul').find('li:first').width();
+    var liWid = $(window).width();
+    var offsetWid=Math.abs(parseInt($('.home_banner ul').css('marginLeft')));
+    $('.home_banner ul li').width($(window).width());
+
+    $('.home_banner ul li a').css('marginLeft', ($(window).width()-1920)*0.5);
+
+    $('.home_banner ul').find('li:last').clone().prependTo($('.home_banner ul'));
+    $('.home_banner ul li').eq(1).clone().appendTo($('.home_banner ul'));
+
+    // $('.home_banner ul').css('marginLeft', -liWid);
+    var liLeng = $('.home_banner ul li').length;
+    $('.home_banner ul').width($('.home_banner ul li').width()*liLeng);
+
+    for (var i = 0; i < liLeng - 2; i++) {
+      $('.home_banner_cho_box').append('<em></em>');
+    };
+BannerMove();
+    $(document).on('click', '.home_banner_cho_box em', function(event) {
+            homeIdx = $(this).index() + 2;
+            BannerMove();
+    });
+
+    // if (homeLeng > 1) {
+    //     $('.home_banner').hover(function() {
+    //         $('.home_banner_cho_box').fadeIn(300);
+    //       }, function() {
+    //         $('.home_banner_cho_box').fadeOut(300);
+    //       });
+    // }else{
+    //         $('.home_banner_cho_box').hide();
+    // };
+    $('.home_banner').hover(function() {
+        clearInterval(lb); 
+      }, function() {
+        lb = window.setInterval(Bnneradd, 3000);
+      });
+
+
+
+
+
+
+
+/*自动轮播*/
+function Bannerscroll(){
+  lb = window.setInterval(Bnneradd, 3000);
+}
+
+function Bnneradd(){
+  homeIdx=homeIdx+1;
+  BannerMove();
+
+}
+function BannerMove(){ 
+        console.log(homeIdx);
+      if (homeIdx < 1) {
+            $(".home_banner ul").stop(true,true).animate({ 
+               marginLeft: -homeIdx*liWid
+              },500,function(){ 
+                $(this).css({marginLeft: -(liLeng-2)*liWid}); 
+                homeIdx = liLeng-2;
+                }); 
+      }else if (homeIdx > liLeng - 2) {
+            $(".home_banner ul").stop(true,true).animate({ 
+               marginLeft: -homeIdx*liWid
+              },500,function(){ 
+                $(this).css({marginLeft: -liWid}); 
+                homeIdx = 1;
+                });
+      }else{
+            $(".home_banner ul").stop(true,true).animate({marginLeft: -homeIdx*liWid }, 600)
+      };
+      $('.home_banner_cho_box em').eq(homeIdx-2).addClass('on').siblings('em').removeClass('on');
+}
+
+});
+
+

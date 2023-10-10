@@ -1,0 +1,103 @@
+/**
+ * 
+ * @authors 宋波
+ * @date    2016年11月24日11:16:06
+ * @version $Id$
+ */
+$(document).ready(function($) {
+	var BookLength = $('.hc_content ul li').length;
+	var BookIndex = 0;
+	if (BookLength%3 == 0) {
+		var BookCholength = Math.floor(BookLength/3);
+	}else{
+		var BookCholength = Math.floor(BookLength/3) + 1;
+	}
+
+	var BookSrc = [];
+
+	$('.hc_content ul li').each(function(e) {
+		BookSrc.push($(this).find('img').attr('src'))
+	});
+
+	for (var i = 0; i < BookLength; i++) {
+		$('.hc_spic').append('<li><img src="' + BookSrc[i] + '" alt=""></li>');
+	};
+
+	$('.hc_spic').width(315*BookLength);
+
+	homeBookMove();
+	homeBookAdd();
+
+	$('.hc_content, .hc_spic, .hc_cho_box').hover(function(){
+    	clearInterval(HomeBookLb);
+    },function(){
+    	homeBookAdd();
+    });
+	$(document).on('click', '.hcl,.change_left', function(event) {
+    	event.preventDefault();
+    	if (BookIndex > 0) {
+    		BookIndex--;
+    		homeBookMove();
+    	}else{
+    		BookIndex = BookLength - 1;
+    		homeBookMove();
+    	};
+    });
+    $(document).on('mouseenter','.hc_content',function(){
+        $(".change_left").show();
+        $(".change_right").show();
+    });
+    $(document).on('mouseleave','.hc_content',function(){
+        $(".change_left").hide();
+        $(".change_right").hide();
+    });
+    // $(document).on('mouseenter','.hc_spic',function(){
+    //     $(".hcl").show();
+    //     $(".hcr").show();
+    // });
+    // $(document).on('mouseleave','.hc_spic',function(){
+    //     $(".hcr").hide();
+    //     $(".hcl").hide();
+    // });
+
+    $(document).on('click', '.hcr,.change_right', function(event) {
+    	event.preventDefault();
+    	if (BookIndex < BookLength - 1) {
+    		BookIndex++;
+    		homeBookMove();
+    	}else{
+    		BookIndex = 0;
+    		homeBookMove();
+    	};
+    });
+    
+    $(document).on('click', '.hc_spic li', function(event) {
+    	event.preventDefault();
+    	BookIndex = $(this).index();
+    	homeBookMove();
+    });
+
+
+function homeBookAdd(){
+	 HomeBookLb = window.setInterval(function(){
+		if (BookIndex >= BookLength - 1) {
+			BookIndex = 0;
+		}else{
+			BookIndex++;
+		}
+		homeBookMove();
+	},5000)
+}
+
+function homeBookMove(){
+	$('.hc_content ul li').eq(BookIndex).stop().fadeIn(300);
+	$('.hc_content ul li').eq(BookIndex).siblings('li').stop().fadeOut();
+	$('.hc_spic').stop().animate({marginLeft: -(315 * BookIndex)}, 600)
+}
+
+
+
+
+
+
+});

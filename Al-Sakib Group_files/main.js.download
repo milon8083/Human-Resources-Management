@@ -1,0 +1,161 @@
+/**
+ * 
+ * @authors 宋波
+ * @date    2016年11月21日10:03:59
+ * @version $Id$
+ */
+
+$(document).ready(function($) {
+
+
+		/*视频*/
+	    $(".sp_box").find('video').each(function() {
+	        var obj = $(this).attr("id");
+	        if ($(".sp_box").length>0) {
+	            jwplayer(obj).setup({
+	                skin: "video/glow.zip",
+	                stretching:"fill",
+	                autoStart:false,
+	                flashplayer: "video/player.swf",
+	            });
+	        };
+	    });
+		/*主菜单*/
+		$(document).on('mouseover', '.head_menu li', function(event) {
+			event.preventDefault();
+			$(this).find('.sub_nav_bd').stop(true).slideDown(300);
+		});
+        $(document).on('mouseleave', '.head_menu li', function(event) {
+			event.preventDefault();
+			$(this).find('.sub_nav_bd').stop(true).slideUp(300);
+		});
+
+		/*返回顶部*/
+		$(window).scroll(function(){
+			if ($(window).scrollTop() >= 114) {
+					$('.to_top').addClass('on');
+				}else{
+					$('.to_top').removeClass('on');
+				}
+
+			if ($(window).scrollTop() >= 430) {
+					$('.left_menu_box').addClass('on');
+			        // $('.left_menu_box.on').stop().animate({top: $(window).scrollTop() - 200}, 1000);
+			        // $('.left_menu_box').stop().animate({top: 42}, 1000);
+				}else{
+					$('.left_menu_box').removeClass('on');
+			        // $('.left_menu_box').stop().animate({top: 0}, 1000);
+				}	
+			setTimeout(function(){
+					    },500);
+			
+
+		});
+		$(document).on('click', '.to_top', function(event) {
+			event.preventDefault();
+			$('html,body').animate({scrollTop: '0px'}, 800);
+		});
+
+		/*招聘*/
+		$(document).on('click', '.zp_open', function(event) {
+			event.preventDefault();
+			$(this).toggleClass('zp_close');
+			$(this).parent('.zp_line').next('.zp_content').stop().slideToggle(300);
+		});
+		$(document).on('change','.hr_tab_box select',function(e){
+			var tid = parseInt($(this).val());
+			if(tid > 0){
+				window.location.href="hr.php?tid="+tid;
+			}else{
+				window.location.href="hr.php";
+			}
+		});
+
+
+
+		/*地图*/
+		$(document).on('click', '.cy_fd_tab_box a', function(e) {
+			e.preventDefault();
+			$(this).addClass('on').siblings('a').removeClass('on');
+			var idx = $(this).index();
+			$(".branch_box").eq(idx).show().siblings(".branch_box").hide();
+			// $(this).parent('.zp_line').next('.zp_content').stop().slideToggle(300);
+		});
+		$(document).on('click', '.fc_branch_box ul li a', function(event) {
+			event.preventDefault();
+			var localPointX = $(this).attr('localX');
+			var localPointY = $(this).attr('localY');
+			var branchname = $(this).attr('branchname');
+			var branchcontent = $(this).attr('branchcontent');
+			var branchaddress = $(this).attr('branchaddress');
+			var branchtel = $(this).attr('branchtel');
+			$('.back_fd').fadeIn(300);
+			$('.branch_bd').fadeOut(300);
+			$('.map_wrap').fadeIn(300);
+			baiduMap(localPointX,localPointY,branchname,branchcontent,branchaddress,branchtel);
+		});
+		$(document).on('click', '.back_fd', function(event) {
+			event.preventDefault();
+			$('.back_fd').hide();
+			$('.branch_bd').fadeIn(300);
+			$('.map_wrap').fadeOut(300);
+		});
+		$(document).on('click', '.close_fd', function(event) {
+			event.preventDefault();
+			$('.branch_wrap').fadeOut(300);
+		});
+		$(document).on('click', '.branch_box', function(e) {
+			e.preventDefault();
+			var companyid = parseInt($(this).attr("val"));
+			var bid = parseInt($(".right_content").attr("bid"));
+			$(".branch_bd").html("");
+			$.get("getAjaxContent.php",{cmd:'getBrandStore',bid:bid,companyid:companyid},function(result){
+				$(".branch_bd").html(result);
+				$('.branch_wrap').fadeIn(300);
+				$('.branch_bd').fadeIn(300);
+				$('.map_wrap').fadeOut(300);
+			});
+		});
+
+		getNews(0);		
+		$(document).on("click",".pageNewsAjax a",function(e){
+			e.preventDefault();
+			var page = parseInt($(this).attr("page"));
+			getNews(page);
+		})
+		function getNews(page){
+			var bid = parseInt($(".right_content").attr("bid"));
+			$.get("getAjaxContent.php",{cmd:'getBrandNews',bid:bid,page:page},function(result){
+				$(".cy_news_box").html(result);
+			});
+		}
+
+
+
+		
+
+function baiduMap(localPointX,localPointY,branchname,branchcontent,branchaddress,branchtel){
+		var sContent =
+	"<h4 style='background-color: #f5891d;height: 36px;line-height: 36px;font-size: 14px;color: #fefefe;padding: 0 29px;margin-bottom: 5px;'>"+ branchname +"</h4>" + 
+	"<div style='padding: 10px;color:#666;background-color: #fff;height: 50px;overflow-y: scroll;margin-bottom: 10px;font-size: 14px;'><p>"+ branchcontent +"</p></div>" + 
+	"<span style='color:#666;margin-bottom:10px;display:block;height: 23px;line-height: 23px;font-size:14px;'><i style='background: url(img/icon.png) no-repeat;zoom:0.7;margin-top:2px;display: inline-block;vertical-align: center;float:left;width: 20px;height: 23px;margin-right: 10px;background-position: -80px 0;'></i>"+ branchaddress +"</span>" + "<span style='color:#666;font-size:14px;display:block;height: 23px;line-height: 23px;'><i style='zoom:0.7;margin-top:2px;background: url(img/icon.png) no-repeat;display: inline-block;vertical-align: center;float:left;width: 20px;height: 20px;margin-right: 10px;background-position: -115px 0;'></i>"+ branchtel +"</span>";
+		var map = new BMap.Map("allmap");
+		var point = new BMap.Point(localPointX, localPointY);
+		var marker = new BMap.Marker(point);
+		var infoWindow = new BMap.InfoWindow(sContent);  // 创建信息窗口对象
+		map.centerAndZoom(point, 15);
+		map.addOverlay(marker);
+		map.openInfoWindow(infoWindow,point); //开启信息窗口
+
+		marker.addEventListener("click", function(){          
+		   this.openInfoWindow(infoWindow);
+		   //图片加载完毕重绘infowindow
+		   document.getElementById('imgDemo').onload = function (){
+			   infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
+		   }
+		});
+}
+
+});
+
+
